@@ -1,0 +1,197 @@
+@import "tailwindcss";
+@import "@fontsource-variable/cormorant-garamond/wght.css";
+@import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+@import "@fontsource-variable/dm-sans/index.css";
+@import "@fontsource/barlow-condensed/400.css";
+@import "@fontsource/barlow-condensed/500.css";
+@import "@fontsource/barlow-condensed/600.css";
+
+/* ---------- Design tokens: the palette from Sakshi's Modern Romance collection ---------- */
+@theme {
+  --color-ivory: #f7f5ef;
+  --color-white: #ffffff;
+  --color-blush: #f4dde3;
+  --color-butter: #f0e4a5;
+  --color-rose: #d9a4b1;
+  --color-cocoa: #49362f;
+  --color-charcoal: #252525;
+  --color-warm-grey: #88847d;
+  /* Warm grey darkened just enough for AA contrast on ivory when used for small text. */
+  --color-ash: #5e5a54;
+
+  --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "DM Sans Variable", "DM Sans", system-ui, sans-serif;
+  --font-label: "Barlow Condensed", "Arial Narrow", sans-serif;
+
+  --ease-editorial: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.is-locked {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-butter);
+  color: var(--color-charcoal);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cocoa);
+  outline-offset: 3px;
+}
+
+.on-dark :focus-visible {
+  outline-color: var(--color-butter);
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+/* ---------- Editorial type helpers ---------- */
+@layer components {
+  /* Condensed uppercase micro-labels: collection names, metadata, section kickers */
+  .label {
+    font-family: var(--font-label);
+    font-weight: 500;
+    font-size: 0.8125rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+
+  .serif-italic {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .hairline {
+    border-color: color-mix(in srgb, currentColor 22%, transparent);
+  }
+
+  /* Visible-but-unmistakable "fill me in" marker for unverified personal details */
+  .placeholder-mark {
+    border-bottom: 1px dashed currentColor;
+    opacity: 0.8;
+  }
+
+  .link-underline {
+    background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+    transition: background-size 0.5s var(--ease-editorial);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* Split-text word masks (used by <SplitText />) */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.split-inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* ---------- Dialogs (garment detail + lightbox) ---------- */
+dialog.sheet {
+  max-width: none;
+  max-height: none;
+  width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+}
+dialog.sheet[open] {
+  animation: sheet-in 0.5s var(--ease-editorial);
+}
+dialog.sheet::backdrop {
+  background: rgb(37 37 37 / 0.85);
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(2.5%);
+  }
+}
+
+/* ---------- Scroll cue ---------- */
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+.scroll-cue-line {
+  animation: scroll-cue 2.4s var(--ease-editorial) infinite;
+}
+
+/* Hide scrollbars on touch galleries without disabling scrolling */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Reduced motion: static alternatives everywhere ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .scroll-cue-line {
+    animation: none;
+    transform: scaleY(1);
+  }
+}
